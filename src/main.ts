@@ -3,10 +3,7 @@ export type Fen = string
 export type Suit = 1 | 2 | 3 | 4
 export type Rank = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12
 
-export type Card = {
-  suit: Suit,
-  rank: Rank
-}
+export type Card = number
 
 export type Hand = [Card, Card]
 export type Flop = [Card, Card, Card]
@@ -19,8 +16,34 @@ export type HeadsUp = {
   river?: Card
 }
 
+
+export function make_card(suit: Suit, rank: Rank) {
+  return suit * 20 + rank
+}
+
+export function card_suit(card: Card) {
+  return (card - card % 20) / 20 as Suit
+}
+
+export function card_rank(card: Card) {
+  return card % 20 as Rank
+}
+
 const rank_ucis = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']
 const suit_ucis = ['h', 's', 'c', 'd']
+
+export function rank_uci(rank: Rank) {
+  return rank_ucis[rank-1]
+}
+
+export function suit_uci(suit: Suit) {
+  return suit_ucis[suit - 1]
+}
+
+export function card_uci(card: Card) {
+  return rank_uci(card_rank(card)) + suit_uci(card_suit(card))
+}
+
 
 function read_rank(_rank: string): Rank | undefined {
   let res = rank_ucis.indexOf(_rank) + 1
@@ -47,7 +70,7 @@ function read_card(_card: string): Card | undefined {
 
 
   if (rank && suit) {
-    return { rank, suit }
+    return make_card(suit, rank)
   }
 }
 
