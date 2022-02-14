@@ -8,12 +8,16 @@ export type Card = number
 export type Hand = [Card, Card]
 export type Flop = [Card, Card, Card]
 
-export type HeadsUp = {
+export type Deals = {
   hand1: Hand,
   hand2?: Hand,
   flop?: [Card, Card, Card],
   turn?: Card,
   river?: Card
+}
+
+export type HeadsUp = {
+  deals?: Deals
 }
 
 
@@ -83,13 +87,20 @@ function read_cards(_cards: string): Array<Card> | undefined {
 /* 10d 11h/?/?/?/? */
 export function fen_headsup(fen: Fen): HeadsUp {
   let [_hand1, _hand2, _flop, _turn, _river]  = fen.split('/')
-  return {
-    hand1: read_cards(_hand1) as Hand,
+
+
+  let hand1 = read_cards(_hand1) as Hand | undefined
+
+  let deals = hand1 ? {
+    hand1,
     hand2: read_cards(_hand2) as Hand | undefined,
     flop: read_cards(_flop) as Flop,
     turn: read_card(_turn),
     river: read_card(_river) 
-  }
+  } : undefined
+
+
+  return { deals }
 }
 
 
